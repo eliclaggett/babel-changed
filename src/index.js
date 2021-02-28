@@ -29,14 +29,23 @@ if (src == '--reset') {
 }
 
 const cmd = 'babel';
-const options = process.argv.slice(3);
+var options = process.argv.slice(3);
+
+const numOptions = options.length;
+var useChecksum = false;
+for (var i = 0; i < numOptions; i++) {
+  if (options[i] == '--checksum') {
+    useChecksum = true;
+    options.splice(i, 1);
+  }
+}
 
 let files = glob.sync(`${src}/**/*.js*`);
 if (!files.length) files = [files];
 
 files = uniq(files);
 
-const cache = fileEntryCache.create(key);
+const cache = fileEntryCache.create(key, null, useChecksum);
 
 const updated = cache.getUpdatedFiles(files);
 
